@@ -1,6 +1,7 @@
 {
   "name": "gtadyomid",
   "private": true,
+  "workspaces": ["apps/*"],
   "license": "MIT",
   "author": "Apriza Prasetio <aprizaprasetio@gmail.com> (https://github.com/aprizaprasetio)"
 }
