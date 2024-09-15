@@ -4,10 +4,12 @@
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.19.1",
     "hono": "^4.6.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "prisma": "^5.19.1"
   }
 }
