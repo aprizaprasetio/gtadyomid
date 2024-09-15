@@ -1,0 +1,47 @@
+// Prisma schema file docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRoleType {
+    ADMIN
+}
+
+model User {
+    id             Int       @id @default(autoincrement())
+    email          String    @unique
+    hashedPassword String    @map("hashed_password")
+    username       String
+    displayName    String?   @map("display_name")
+    sessions       Session[]
+    role           UserRole?
+    createdAt      DateTime  @default(now()) @map("created_at")
+    updatedAt      DateTime  @updatedAt @map("updated_at")
+
+    @@map("user")
+}
+
+model UserRole {
+    id        Int          @id @default(autoincrement())
+    type      UserRoleType
+    userId    Int          @unique @map("user_id")
+    user      User         @relation(fields: [userId], references: [id])
+    createdAt DateTime     @default(now()) @map("created_at")
+
+    @@map("role")
+}
+
+model Session {
+    id        String   @id
+    userId    Int      @map("user_id")
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expiresAt DateTime @map("expires_at")
+
+    @@map("session")
+}
