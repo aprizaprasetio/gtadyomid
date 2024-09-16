@@ -1,15 +1,6 @@
-import { describe, it, expect, beforeEach, afterAll } from 'bun:test'
+import { describe, it, expect } from 'bun:test'
 import { db } from '@src/clients/db.client'
 import { users } from './users.api'
-
-beforeEach(async () => {
-  // Clean the test database before each test
-  await db.user.deleteMany({})
-})
-
-afterAll(async () => {
-  await db.$disconnect()
-})
 
 describe('POST /register', () => {
   it('should register a new user', async () => {
