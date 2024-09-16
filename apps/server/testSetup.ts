@@ -7,6 +7,5 @@ beforeEach(async () => {
 })
 
 afterAll(async () => {
-  console.info('anjay')
   await db.$disconnect()
 })
