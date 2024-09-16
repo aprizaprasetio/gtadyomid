@@ -1,4 +1,3 @@
-import { fetch } from 'bun'
 import { describe, it, expect, beforeEach, afterAll } from 'bun:test'
 import { db } from '@src/clients/db.client'
 import { users } from './users.api'
