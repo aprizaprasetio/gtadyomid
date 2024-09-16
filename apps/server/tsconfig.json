@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@src/*": ["./src/*"]
+    },
     "strict": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
-  }
+    "typeRoots": ["./src/types", "./node_modules/@types"]
+  },
+  "include": ["src/**/*"]
 }
