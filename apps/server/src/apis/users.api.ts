@@ -1,7 +1,7 @@
 import { password } from 'bun'
 import { Hono } from 'hono'
 import { validator } from 'hono/validator'
-import { z, ZodError, ZodIssue } from 'zod'
+import { z, ZodError, type ZodIssue } from 'zod'
 import { db } from '@src/clients/db.client'
 
 const registerSchema = z.object({
