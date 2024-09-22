@@ -17,7 +17,7 @@ model User {
     id             Int       @id @default(autoincrement())
     email          String    @unique
     hashedPassword String    @map("hashed_password")
-    username       String
+    username       String    @unique
     displayName    String?   @map("display_name")
     sessions       Session[]
     role           UserRole?
