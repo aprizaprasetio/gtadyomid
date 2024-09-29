@@ -1,7 +1,11 @@
 import { afterAll, beforeAll } from 'bun:test'
 import type { z } from 'zod'
 import { db } from './src/clients/db.client'
-import { users, type registerSchema } from './src/apis/users.api'
+import {
+  type loginSchema,
+  type registerSchema,
+  users,
+} from './src/apis/users.api'
 
 export const testUser: z.infer<typeof registerSchema> = {
   email: 'test@example.com',
@@ -12,6 +16,16 @@ export const testUser: z.infer<typeof registerSchema> = {
 
 export function registerUser(user: Partial<z.infer<typeof registerSchema>>) {
   return users.request('/register', {
+    method: 'POST',
+    body: JSON.stringify(user),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+}
+
+export function loginUser(user: Partial<z.infer<typeof loginSchema>>) {
+  return users.request('/login', {
     method: 'POST',
     body: JSON.stringify(user),
     headers: {

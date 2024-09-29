@@ -3,7 +3,7 @@ import type { z } from 'zod'
 import { db } from '@src/clients/db.client'
 import { auth } from '@src/clients/auth.client'
 import { type loginSchema, type registerSchema, users } from './users.api'
-import { registerUser, testUser } from '@src/../testSetup'
+import { loginUser, registerUser, testUser } from '@src/../testSetup'
 
 const newUser: z.infer<typeof registerSchema> = {
   email: 'new@example.com',
@@ -13,13 +13,7 @@ const newUser: z.infer<typeof registerSchema> = {
 }
 async function loginScenario(label: string, user: z.infer<typeof loginSchema>) {
   it(label, async () => {
-    const res = await users.request('/login', {
-      method: 'POST',
-      body: JSON.stringify(user),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const res = await loginUser(user)
 
     expect(res.status).toBe(204)
     expect(res.body).toBeNull()
