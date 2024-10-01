@@ -15,6 +15,9 @@ export const loginSchema = z.object({
   identity: z.string().toLowerCase(),
   password: z.string(),
 })
+export const cookieSchema = z.object({
+  auth_session: z.string().nullish(),
+})
 
 export const users = new Hono()
 
@@ -121,6 +124,25 @@ users.post(
     const session = await auth.createSession(userId, {})
     const sessionCookie = auth.createSessionCookie(session.id)
 
+    c.header('Set-Cookie', sessionCookie.serialize())
+
+    return c.body(null, 204)
+  },
+)
+
+users.post(
+  '/logout',
+  validator('cookie', async (val, c) => {
+    const { error, data } = await cookieSchema.safeParseAsync(val)
+    if (error || !data.auth_session) return c.json(error, 400)
+
+    return data.auth_session
+  }),
+  async c => {
+    const sessionId = c.req.valid('cookie')
+    const sessionCookie = auth.createBlankSessionCookie()
+
+    await auth.invalidateSession(sessionId)
     c.header('Set-Cookie', sessionCookie.serialize())
 
     return c.body(null, 204)
