@@ -58,3 +58,25 @@ describe('POST /login', () => {
     password: testUser.password,
   })
 })
+
+describe('POST /logout', () => {
+  it('should remove the session cookie', async () => {
+    const login = await loginUser({
+      identity: testUser.email,
+      password: testUser.password,
+    })
+
+    const logout = await users.request('/logout', {
+      method: 'POST',
+      headers: {
+        Cookie: login.headers.getSetCookie()[0],
+      },
+    })
+
+    expect(logout.status).toBe(204)
+    expect(logout.body).toBeNull()
+    expect(logout.headers.getSetCookie()[0]).toBe(
+      auth.createBlankSessionCookie().serialize(),
+    )
+  })
+})
