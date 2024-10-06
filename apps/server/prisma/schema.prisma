@@ -13,6 +13,14 @@ enum UserRoleType {
     ADMIN
 }
 
+enum MissionStatus {
+    DRAFT
+    PUBLISHED
+    ARCHIVED
+    REVIEW
+    REJECTED
+}
+
 model User {
     id             Int       @id @default(autoincrement())
     email          String    @unique
@@ -21,6 +29,7 @@ model User {
     displayName    String?   @map("display_name")
     sessions       Session[]
     role           UserRole?
+    mission        Mission[]
     createdAt      DateTime  @default(now()) @map("created_at")
     updatedAt      DateTime  @updatedAt @map("updated_at")
 
@@ -44,4 +53,17 @@ model Session {
     expiresAt DateTime @map("expires_at")
 
     @@map("session")
+}
+
+model Mission {
+    id          Int           @id
+    title       String
+    description String
+    status      MissionStatus @default(DRAFT)
+    userId      Int           @map("user_id")
+    user        User          @relation(references: [id], fields: [userId])
+    createdAt   DateTime      @default(now()) @map("created_at")
+    updatedAt   DateTime      @updatedAt @map("updated_at")
+
+    @@map("mission")
 }
