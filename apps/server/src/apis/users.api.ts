@@ -4,6 +4,8 @@ import { validator } from 'hono/validator'
 import { z, ZodError, type ZodIssue } from 'zod'
 import { auth } from '@src/clients/auth.client'
 import { db } from '@src/clients/db.client'
+import { authValidator } from '@src/utils/auth.validator'
+import { sessionMiddleware } from '@src/utils/session.middleware'
 
 export const registerSchema = z.object({
   email: z.string().email().toLowerCase(),
@@ -15,11 +17,8 @@ export const loginSchema = z.object({
   identity: z.string().toLowerCase(),
   password: z.string(),
 })
-export const cookieSchema = z.object({
-  auth_session: z.string().nullish(),
-})
 
-export const users = new Hono()
+export const users = new Hono().use(sessionMiddleware)
 
 users.post(
   '/register',
@@ -130,21 +129,12 @@ users.post(
   },
 )
 
-users.post(
-  '/logout',
-  validator('cookie', async (val, c) => {
-    const { error, data } = await cookieSchema.safeParseAsync(val)
-    if (error || !data.auth_session) return c.json(error, 400)
+users.post('/logout', authValidator, async c => {
+  const { session } = c.req.valid('cookie')
+  const sessionCookie = auth.createBlankSessionCookie()
 
-    return data.auth_session
-  }),
-  async c => {
-    const sessionId = c.req.valid('cookie')
-    const sessionCookie = auth.createBlankSessionCookie()
+  await auth.invalidateSession(session.id)
+  c.header('Set-Cookie', sessionCookie.serialize())
 
-    await auth.invalidateSession(sessionId)
-    c.header('Set-Cookie', sessionCookie.serialize())
-
-    return c.body(null, 204)
-  },
-)
+  return c.body(null, 204)
+})
