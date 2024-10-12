@@ -5,7 +5,6 @@ import { z, ZodError, type ZodIssue } from 'zod'
 import { auth } from '@src/clients/auth.client'
 import { db } from '@src/clients/db.client'
 import { authValidator } from '@src/utils/auth.validator'
-import { sessionMiddleware } from '@src/utils/session.middleware'
 
 export const registerSchema = z.object({
   email: z.string().email().toLowerCase(),
@@ -18,7 +17,7 @@ export const loginSchema = z.object({
   password: z.string(),
 })
 
-export const users = new Hono().use(sessionMiddleware)
+export const users = new Hono()
 
 users.post(
   '/register',

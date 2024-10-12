@@ -2,8 +2,9 @@ import { describe, it, expect } from 'bun:test'
 import type { z } from 'zod'
 import { db } from '@src/clients/db.client'
 import { auth } from '@src/clients/auth.client'
-import { type loginSchema, type registerSchema, users } from './users.api'
+import app from '@src/.'
 import { loginUser, registerUser, ichigoUser } from '@src/../testSetup'
+import type { loginSchema, registerSchema } from './users.api'
 
 const newUser: z.infer<typeof registerSchema> = {
   email: 'new@example.com',
@@ -66,7 +67,7 @@ describe('POST /logout', () => {
       password: ichigoUser.password,
     })
 
-    const logout = await users.request('/logout', {
+    const logout = await app.request('users/logout', {
       method: 'POST',
       headers: {
         Cookie: login.headers.getSetCookie()[0],
