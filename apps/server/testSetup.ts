@@ -7,11 +7,11 @@ import {
   users,
 } from './src/apis/users.api'
 
-export const testUser: z.infer<typeof registerSchema> = {
-  email: 'test@example.com',
-  username: 'testuser',
-  password: 'testpassword123',
-  displayName: 'Test User',
+export const ichigoUser: z.infer<typeof registerSchema> = {
+  email: 'ichigo@example.com',
+  username: 'ichigouser',
+  password: 'ichigopassword123',
+  displayName: 'ichigo User',
 }
 
 export function registerUser(user: Partial<z.infer<typeof registerSchema>>) {
@@ -35,7 +35,7 @@ export function loginUser(user: Partial<z.infer<typeof loginSchema>>) {
 }
 
 beforeAll(async () => {
-  await registerUser(testUser)
+  await registerUser(ichigoUser)
 })
 
 afterAll(async () => {

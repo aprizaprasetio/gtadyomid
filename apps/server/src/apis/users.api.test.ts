@@ -3,7 +3,7 @@ import type { z } from 'zod'
 import { db } from '@src/clients/db.client'
 import { auth } from '@src/clients/auth.client'
 import { type loginSchema, type registerSchema, users } from './users.api'
-import { loginUser, registerUser, testUser } from '@src/../testSetup'
+import { loginUser, registerUser, ichigoUser } from '@src/../testSetup'
 
 const newUser: z.infer<typeof registerSchema> = {
   email: 'new@example.com',
@@ -50,20 +50,20 @@ describe('POST /register', () => {
 
 describe('POST /login', () => {
   loginScenario('should login a user with email from registered user', {
-    identity: testUser.email,
-    password: testUser.password,
+    identity: ichigoUser.email,
+    password: ichigoUser.password,
   })
   loginScenario('should login a user with username from registered user', {
-    identity: testUser.username,
-    password: testUser.password,
+    identity: ichigoUser.username,
+    password: ichigoUser.password,
   })
 })
 
 describe('POST /logout', () => {
   it('should remove the session cookie', async () => {
     const login = await loginUser({
-      identity: testUser.email,
-      password: testUser.password,
+      identity: ichigoUser.email,
+      password: ichigoUser.password,
     })
 
     const logout = await users.request('/logout', {
