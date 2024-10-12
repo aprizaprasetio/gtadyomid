@@ -1,21 +1,27 @@
 import { afterAll, beforeAll } from 'bun:test'
 import type { z } from 'zod'
+import app from './src'
 import { db } from './src/clients/db.client'
-import {
-  type loginSchema,
-  type registerSchema,
-  users,
-} from './src/apis/users.api'
+import type { loginSchema, registerSchema } from './src/apis/users.api'
 
 export const ichigoUser: z.infer<typeof registerSchema> = {
   email: 'ichigo@example.com',
   username: 'ichigouser',
   password: 'ichigopassword123',
-  displayName: 'ichigo User',
+  displayName: 'Ichigo User',
 }
+export const nigoUser: z.infer<typeof registerSchema> = {
+  email: 'nigo@example.com',
+  username: 'nigouser',
+  password: 'nigopassword123',
+  displayName: 'Nigo User',
+}
+export let nigoUserCookie = ''
 
-export function registerUser(user: Partial<z.infer<typeof registerSchema>>) {
-  return users.request('/register', {
+export async function registerUser(
+  user: Partial<z.infer<typeof registerSchema>>,
+) {
+  return app.request('/users/register', {
     method: 'POST',
     body: JSON.stringify(user),
     headers: {
@@ -25,7 +31,7 @@ export function registerUser(user: Partial<z.infer<typeof registerSchema>>) {
 }
 
 export function loginUser(user: Partial<z.infer<typeof loginSchema>>) {
-  return users.request('/login', {
+  return app.request('users/login', {
     method: 'POST',
     body: JSON.stringify(user),
     headers: {
@@ -36,9 +42,17 @@ export function loginUser(user: Partial<z.infer<typeof loginSchema>>) {
 
 beforeAll(async () => {
   await registerUser(ichigoUser)
+  await registerUser(nigoUser).then(async () => {
+    const login = await loginUser({
+      identity: ichigoUser.email,
+      password: ichigoUser.password,
+    })
+
+    nigoUserCookie = login.headers.getSetCookie()[0]
+  })
 })
 
 afterAll(async () => {
-  await db.user.deleteMany()
+  await db.user.deleteMany({})
   await db.$disconnect()
 })
