@@ -9,7 +9,8 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum UserRoleType {
+enum UserRole {
+    USER
     ADMIN
 }
 
@@ -22,28 +23,18 @@ enum MissionStatus {
 }
 
 model User {
-    id             Int       @id @default(autoincrement())
-    email          String    @unique
-    hashedPassword String    @map("hashed_password")
-    username       String    @unique
-    displayName    String?   @map("display_name")
-    sessions       Session[]
-    role           UserRole?
-    mission        Mission[]
-    createdAt      DateTime  @default(now()) @map("created_at")
-    updatedAt      DateTime  @updatedAt @map("updated_at")
+    id          Int       @id @default(autoincrement())
+    email       String    @unique
+    username    String    @unique
+    displayName String?   @map("display_name")
+    password    String
+    role        UserRole  @default(USER)
+    sessions    Session[]
+    mission     Mission[]
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
 
     @@map("user")
-}
-
-model UserRole {
-    id        Int          @id @default(autoincrement())
-    type      UserRoleType
-    userId    Int          @unique @map("user_id")
-    user      User         @relation(fields: [userId], references: [id])
-    createdAt DateTime     @default(now()) @map("created_at")
-
-    @@map("role")
 }
 
 model Session {
