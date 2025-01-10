@@ -15,6 +15,28 @@ export const loginSchema = z.object({
   identity: z.string().toLowerCase(),
   password: z.string(),
 })
+const emailIssue: ZodIssue = {
+  code: 'custom',
+  path: ['email'],
+  message: 'Email is already registered',
+}
+const usernameIssue: ZodIssue = {
+  code: 'custom',
+  path: ['username'],
+  message: 'Username is already registered',
+}
+const loginError = new ZodError([
+  {
+    code: 'custom',
+    path: ['identity'],
+    message: 'Email or username might be wrong',
+  },
+  {
+    code: 'custom',
+    path: ['password'],
+    message: 'Password might be wrong',
+  },
+])
 
 export const users = new Hono()
 
@@ -34,29 +56,11 @@ users.post(
         username: data.username,
       },
     })
+    const issues: ZodIssue[] = []
+    if (emailCount) issues.push(emailIssue)
+    if (usernameCount) issues.push(usernameIssue)
 
-    if (emailCount || usernameCount) {
-      const emailIssues: ZodIssue[] = emailCount
-        ? [
-            {
-              code: 'custom',
-              path: ['email'],
-              message: 'Email is already registered',
-            },
-          ]
-        : []
-      const usernameIssues: ZodIssue[] = emailCount
-        ? [
-            {
-              code: 'custom',
-              path: ['username'],
-              message: 'Username is already registered',
-            },
-          ]
-        : []
-
-      return c.json(new ZodError([...emailIssues, ...usernameIssues]), 400)
-    }
+    if (issues.length) return c.json(new ZodError(issues), 400)
 
     return data
   }),
@@ -85,7 +89,9 @@ users.post(
           {
             email: data.identity,
           },
-          { username: data.identity },
+          {
+            username: data.identity,
+          },
         ],
       },
       select: {
@@ -94,23 +100,9 @@ users.post(
       },
     })
 
-    const loginError = new ZodError([
-      {
-        code: 'custom',
-        path: ['identity'],
-        message: 'Email or username might be wrong',
-      },
-      {
-        code: 'custom',
-        path: ['password'],
-        message: 'Password might be wrong',
-      },
-    ])
-
     if (!user) return c.json(loginError, 400)
 
     const isVerified = await Bun.password.verify(data.password, user.password)
-
     if (isVerified) return user.id
 
     return c.json(loginError, 400)
@@ -119,7 +111,6 @@ users.post(
     const userId = c.req.valid('json')
     const session = await auth.createSession(userId, {})
     const sessionCookie = auth.createSessionCookie(session.id)
-
     c.header('Set-Cookie', sessionCookie.serialize())
 
     return c.body(null, 204)
@@ -129,7 +120,6 @@ users.post(
 users.post('/logout', authValidator, async c => {
   const { session } = c.req.valid('cookie')
   const sessionCookie = auth.createBlankSessionCookie()
-
   await auth.invalidateSession(session.id)
   c.header('Set-Cookie', sessionCookie.serialize())
 
