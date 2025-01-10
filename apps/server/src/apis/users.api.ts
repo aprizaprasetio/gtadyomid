@@ -1,4 +1,3 @@
-import { password } from 'bun'
 import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import { z, ZodError, type ZodIssue } from 'zod'
@@ -62,12 +61,11 @@ users.post(
     return data
   }),
   async c => {
-    const { password: rawPassword, ...val } = c.req.valid('json')
-
+    const { password, ...val } = c.req.valid('json')
     await db.user.create({
       data: {
         ...val,
-        hashedPassword: await password.hash(rawPassword),
+        password: await Bun.password.hash(password),
       },
     })
 
@@ -92,7 +90,7 @@ users.post(
       },
       select: {
         id: true,
-        hashedPassword: true,
+        password: true,
       },
     })
 
@@ -111,7 +109,7 @@ users.post(
 
     if (!user) return c.json(loginError, 400)
 
-    const isVerified = await password.verify(data.password, user.hashedPassword)
+    const isVerified = await Bun.password.verify(data.password, user.password)
 
     if (isVerified) return user.id
 
