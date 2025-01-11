@@ -40,6 +40,17 @@ CREATE TABLE "mission" (
     CONSTRAINT "mission_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "mission_image" (
+    "id" SERIAL NOT NULL,
+    "smallPath" TEXT NOT NULL,
+    "mediumPath" TEXT NOT NULL,
+    "highPath" TEXT NOT NULL,
+    "mission_id" INTEGER NOT NULL,
+
+    CONSTRAINT "mission_image_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -51,3 +62,6 @@ ALTER TABLE "session" ADD CONSTRAINT "session_user_id_fkey" FOREIGN KEY ("user_i
 
 -- AddForeignKey
 ALTER TABLE "mission" ADD CONSTRAINT "mission_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "mission_image" ADD CONSTRAINT "mission_image_mission_id_fkey" FOREIGN KEY ("mission_id") REFERENCES "mission"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
