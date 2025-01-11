@@ -47,14 +47,26 @@ model Session {
 }
 
 model Mission {
-    id          Int           @id @default(autoincrement())
+    id          Int            @id @default(autoincrement())
     title       String
     description String
-    status      MissionStatus @default(DRAFT)
-    userId      Int           @map("user_id")
-    user        User          @relation(references: [id], fields: [userId])
-    createdAt   DateTime      @default(now()) @map("created_at")
-    updatedAt   DateTime      @updatedAt @map("updated_at")
+    status      MissionStatus  @default(DRAFT)
+    images      MissionImage[]
+    userId      Int            @map("user_id")
+    user        User           @relation(references: [id], fields: [userId])
+    createdAt   DateTime       @default(now()) @map("created_at")
+    updatedAt   DateTime       @updatedAt @map("updated_at")
 
     @@map("mission")
+}
+
+model MissionImage {
+    id         Int     @id @default(autoincrement())
+    smallPath  String
+    mediumPath String
+    highPath   String
+    missionId  Int     @map("mission_id")
+    mission    Mission @relation(fields: [missionId], references: [id])
+
+    @@map("mission_image")
 }
