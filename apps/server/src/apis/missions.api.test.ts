@@ -1,23 +1,24 @@
 import { describe, expect, it } from 'bun:test'
-import type { z } from 'zod'
+import { resolve } from 'node:path'
 import app from '@src/.'
 import { db } from '@src/clients/db.client'
 import { nigoUserCookie } from '@src/../testSetup'
-import type { missionSchema } from './missions.api'
 
-const newMission: z.infer<typeof missionSchema> = {
-  title: 'Mission Title',
-  description: 'Mission Description',
-}
+const anarchyRoad = Bun.file(
+  resolve(__dirname, '../tests/assets/Anarchy Road.webp'),
+)
+const newMission = new FormData()
+newMission.append('title', 'Mission Title')
+newMission.append('description', 'Mission Description')
+newMission.append('images', anarchyRoad)
 
 describe('POST /missions', () => {
   it('should create a mission', async () => {
     const res = await app.request('/missions', {
       method: 'POST',
-      body: new URLSearchParams(newMission),
+      body: newMission,
       headers: {
         Cookie: nigoUserCookie,
-        'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
 
@@ -26,7 +27,7 @@ describe('POST /missions', () => {
 
     // Verify mission exists in the database
     const newMissionCount = await db.mission.count({
-      where: { title: newMission.title },
+      where: { title: newMission.get('title')?.toString() ?? '' },
     })
 
     expect(newMissionCount).toBe(1)
@@ -37,7 +38,6 @@ describe('POST /missions', () => {
       method: 'POST',
       headers: {
         Cookie: nigoUserCookie,
-        'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
 
@@ -48,10 +48,7 @@ describe('POST /missions', () => {
   it('should not create a mission with unauthenticated cookie', async () => {
     const mission = await app.request('/missions', {
       method: 'POST',
-      body: new URLSearchParams(newMission),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      body: newMission,
     })
 
     expect(mission.status).toBe(401)

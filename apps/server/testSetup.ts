@@ -53,6 +53,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
+  await db.missionImage.deleteMany({})
   await db.mission.deleteMany({})
   await db.user.deleteMany({})
   await db.$disconnect()
