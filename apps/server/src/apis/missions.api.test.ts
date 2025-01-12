@@ -4,19 +4,31 @@ import app from '@src/.'
 import { db } from '@src/clients/db.client'
 import { nigoUserCookie } from '@src/../testSetup'
 
-const anarchyRoad = Bun.file(
-  resolve(__dirname, '../tests/assets/Anarchy Road.webp'),
+const anarchyRoadMission = new FormData()
+anarchyRoadMission.append('title', 'Anarchy Road')
+anarchyRoadMission.append(
+  'description',
+  `
+Welcome to Anarchy Road.
+
+This is a spin-off from my previous contest entry Lunar Soul. It follows two characters - Sean and Valerie, before they meet engineer James Morgan.
+
+They are stranded in the ruins of Las Venturas and are in a midst of a conflict against a vengeful Gregory Baines, who seeks to impress his boss Malcolm Morrison and avenge his daughter's death.
+
+Find out what happens.
+
+  `,
 )
-const newMission = new FormData()
-newMission.append('title', 'Mission Title')
-newMission.append('description', 'Mission Description')
-newMission.append('images', anarchyRoad)
+anarchyRoadMission.append(
+  'images',
+  Bun.file(resolve(__dirname, '../tests/assets/Anarchy Road.webp')),
+)
 
 describe('POST /missions', () => {
   it('should create a mission', async () => {
     const res = await app.request('/missions', {
       method: 'POST',
-      body: newMission,
+      body: anarchyRoadMission,
       headers: {
         Cookie: nigoUserCookie,
       },
@@ -26,11 +38,11 @@ describe('POST /missions', () => {
     expect(res.body).toBeNull()
 
     // Verify mission exists in the database
-    const newMissionCount = await db.mission.count({
-      where: { title: newMission.get('title')?.toString() ?? '' },
+    const anarchyRoadMissionCount = await db.mission.count({
+      where: { title: anarchyRoadMission.get('title')?.toString() ?? '' },
     })
 
-    expect(newMissionCount).toBe(1)
+    expect(anarchyRoadMissionCount).toBe(1)
   })
 
   it('should not create a mission with missing form datas', async () => {
@@ -48,7 +60,7 @@ describe('POST /missions', () => {
   it('should not create a mission with unauthenticated cookie', async () => {
     const mission = await app.request('/missions', {
       method: 'POST',
-      body: newMission,
+      body: anarchyRoadMission,
     })
 
     expect(mission.status).toBe(401)
