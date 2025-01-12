@@ -100,7 +100,7 @@ missions.post(
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9.-]/g, '')
     for (let i = 0; i < images.length; i++) {
-      storedImages[i] = storeMissionImage(`${sanitizedName}-${i}`, images[0])
+      storedImages[i] = storeMissionImage(`${sanitizedName}-${i}`, images[i])
     }
 
     await db.mission.create({
