@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import { zfd } from 'zod-form-data'
@@ -15,9 +16,10 @@ const imageVariants = {
   medium: 480,
   small: 360,
 }
-const imageBucket = 'images'
-type StoredImagePath = Promise<
-  Pick<MissionImage, 'highPath' | 'mediumPath' | 'smallPath'>
+const s3ImageFolder = 'images'
+type StoredImagePath = Pick<
+  MissionImage,
+  'highPath' | 'mediumPath' | 'smallPath'
 >
 
 export const missionSchema = zfd.formData({
@@ -50,24 +52,30 @@ export const missionSchema = zfd.formData({
   ),
 })
 
-async function storeImage(image: File, width: number) {
-  const path = `${imageBucket}/${Bun.randomUUIDv7()}.webp`
-
+async function resizeImage(image: File, width: number) {
   const imageArrayBuffer = await image.arrayBuffer()
-  const sharpBuffer = await sharp(imageArrayBuffer)
-    .resize(width)
-    .webp()
-    .toBuffer()
-  await s3.file(path).write(sharpBuffer)
+  return sharp(imageArrayBuffer).resize(width).webp().toBuffer()
+}
+
+async function storeImageS3(name: string, image: Buffer) {
+  const path = `${s3ImageFolder}/${name}-${nanoid(10)}.webp`
+  await s3.file(path).write(image)
 
   return path
 }
 
-async function getImagePath(image: File): Promise<StoredImagePath> {
+async function storeMissionImages(
+  name: string,
+  image: File,
+): Promise<StoredImagePath> {
+  const high = await resizeImage(image, imageVariants.high)
+  const medium = await resizeImage(image, imageVariants.medium)
+  const small = await resizeImage(image, imageVariants.small)
+
   return {
-    highPath: await storeImage(image, imageVariants.high),
-    mediumPath: await storeImage(image, imageVariants.medium),
-    smallPath: await storeImage(image, imageVariants.small),
+    highPath: await storeImageS3(name, high),
+    mediumPath: await storeImageS3(name, medium),
+    smallPath: await storeImageS3(name, small),
   }
 }
 
@@ -87,8 +95,12 @@ missions.post(
     const { images, ...val } = c.req.valid('form')
 
     const storedImages: Promise<StoredImagePath>[] = []
+    const sanitizedName = val.title
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9.-]/g, '')
     for (let i = 0; i < images.length; i++) {
-      storedImages[i] = getImagePath(images[0])
+      storedImages[i] = storeMissionImages(`${sanitizedName}-${i}`, images[0])
     }
 
     await db.mission.create({
