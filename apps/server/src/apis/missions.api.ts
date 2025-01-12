@@ -30,17 +30,17 @@ export const missionSchema = zfd.formData({
       .file()
       .refine(
         file => {
-          const isValidTypes = allowedImageTypes.includes(file.type)
-          let isValidExtensions = false
+          const isValidType = allowedImageTypes.includes(file.type)
+          let isValidExtension = false
 
           for (let i = 0; i < allowedImageExtensions.length; i++) {
             if (file.name.endsWith(allowedImageExtensions[i])) {
-              isValidExtensions = true
+              isValidExtension = true
               break
             }
           }
 
-          return isValidTypes && isValidExtensions
+          return isValidType && isValidExtension
         },
         {
           message: `Image should be ${allowedImageExtensions.join(' or ')}`,
@@ -64,7 +64,7 @@ async function storeImageS3(name: string, image: Buffer) {
   return path
 }
 
-async function storeMissionImages(
+async function storeMissionImage(
   name: string,
   image: File,
 ): Promise<StoredImagePath> {
@@ -100,7 +100,7 @@ missions.post(
       .replace(/\s+/g, '-')
       .replace(/[^a-z0-9.-]/g, '')
     for (let i = 0; i < images.length; i++) {
-      storedImages[i] = storeMissionImages(`${sanitizedName}-${i}`, images[0])
+      storedImages[i] = storeMissionImage(`${sanitizedName}-${i}`, images[0])
     }
 
     await db.mission.create({
