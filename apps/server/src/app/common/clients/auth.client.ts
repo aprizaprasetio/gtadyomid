@@ -1,6 +1,6 @@
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
 import { Lucia } from 'lucia'
-import { db } from './db.client'
+import { db } from '@infra/clients/db.client'
 
 declare module 'lucia' {
   interface Register {

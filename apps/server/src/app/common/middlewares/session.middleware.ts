@@ -1,6 +1,6 @@
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { auth } from '@src/clients/auth.client'
+import { auth } from '@src/app/common/clients/auth.client'
 
 export const sessionMiddleware = createMiddleware(async (c, next) => {
   const sessionId = getCookie(c, auth.sessionCookieName) ?? null

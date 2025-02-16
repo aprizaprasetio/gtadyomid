@@ -1,7 +1,7 @@
 import { validator } from 'hono/validator'
 import { ZodError } from 'zod'
-import { auth } from '@src/clients/auth.client'
-import { db } from '@src/clients/db.client'
+import { auth } from '@src/app/common/clients/auth.client'
+import { db } from '@src/infra/clients/db.client'
 
 export const sessionError = new ZodError([
   {

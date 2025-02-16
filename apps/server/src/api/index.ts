@@ -1,8 +1,8 @@
 import { Hono } from 'hono'
 import type { Session } from 'lucia'
-import { users } from './apis/users.api'
-import { missions } from './apis/missions.api'
-import { sessionMiddleware } from './utils/session.middleware'
+import { users } from '@app/users/users.api'
+import { missions } from '@app/missions/missions.api'
+import { sessionMiddleware } from '@app/common/middlewares/session.middleware'
 
 declare module 'bun' {
   interface Env {

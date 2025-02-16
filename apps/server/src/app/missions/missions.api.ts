@@ -3,9 +3,9 @@ import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import { zfd } from 'zod-form-data'
 import type { MissionImage } from '@prisma/client'
-import { db } from '@src/clients/db.client'
-import { authValidator } from '@src/utils/auth.validator'
-import { s3 } from '@src/clients/s3.client'
+import { db } from '@src/infra/clients/db.client'
+import { authValidator } from '@src/app/common/validators/auth.validator'
+import { s3 } from '@src/infra/clients/s3.client'
 import sharp = require('sharp')
 
 const allowedImageTypes = ['image/webp', 'image/png']

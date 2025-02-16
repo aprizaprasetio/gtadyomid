@@ -1,7 +1,7 @@
 {
   "name": "server",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/api/index.ts"
   },
   "dependencies": {
     "@lucia-auth/adapter-prisma": "^4.0.1",
