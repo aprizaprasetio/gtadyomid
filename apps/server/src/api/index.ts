@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
-import { users } from '@api/endpoints/users'
-import { missions } from '@app/missions/missions.api'
 import { sessionMiddleware } from '@app/common/middlewares/session.middleware'
+import { users } from '@api/endpoints/users'
+import { missions } from '@api/endpoints/missions'
 
 const app = new Hono().use(sessionMiddleware)
 
