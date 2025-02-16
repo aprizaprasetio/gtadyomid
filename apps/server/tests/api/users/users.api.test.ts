@@ -4,7 +4,8 @@ import { db } from '@infra/clients/db.client'
 import { auth } from '@app/common/clients/auth.client'
 import app from '@api'
 import { loginUser, registerUser, ichigoUser } from '@tests/testSetup'
-import type { loginSchema, registerSchema } from '@app/users/users.api'
+import type { loginSchema } from '@src/app/users/commands/loginUser/loginUser.schema'
+import type { registerSchema } from '@src/app/users/commands/registerUser/registerUser.schema'
 
 const newUser: z.infer<typeof registerSchema> = {
   email: 'new@example.com',
