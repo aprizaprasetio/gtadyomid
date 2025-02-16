@@ -5,6 +5,7 @@
       "@api/*": ["./src/api/*"],
       "@app/*": ["./src/app/*"],
       "@infra/*": ["./src/infra/*"],
+      "@domain/*": ["./src/domain/*"],
       "@tests/*": ["./tests/*"]
     },
     "strict": true,
