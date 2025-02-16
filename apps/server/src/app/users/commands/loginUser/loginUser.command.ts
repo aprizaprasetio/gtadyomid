@@ -1,7 +1,7 @@
 import { validator } from 'hono/validator'
-import { loginSchema } from '@src/app/users/commands/loginUser/loginUser.schema'
+import { loginSchema } from '@app/users/commands/loginUser/loginUser.schema'
 import { db } from '@infra/clients/db.client'
-import { loginError } from '@src/app/users/commands/loginUser/loginUser.error'
+import { loginError } from '@app/users/commands/loginUser/loginUser.error'
 import { auth } from '@app/common/clients/auth.client'
 import { factory } from '@app/common/clients/factory.client'
 

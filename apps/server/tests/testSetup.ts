@@ -2,8 +2,8 @@ import { afterAll, beforeAll } from 'bun:test'
 import type { z } from 'zod'
 import app from '@api'
 import { db } from '@infra/clients/db.client'
-import type { loginSchema } from '@src/app/users/commands/loginUser/loginUser.schema'
-import type { registerSchema } from '@src/app/users/commands/registerUser/registerUser.schema'
+import type { loginSchema } from '@app/users/commands/loginUser/loginUser.schema'
+import type { registerSchema } from '@app/users/commands/registerUser/registerUser.schema'
 
 export const ichigoUser: z.infer<typeof registerSchema> = {
   email: 'ichigo@example.com',

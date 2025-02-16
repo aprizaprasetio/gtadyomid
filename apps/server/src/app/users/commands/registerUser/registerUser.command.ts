@@ -1,10 +1,10 @@
 import { validator } from 'hono/validator'
-import { registerSchema } from '@src/app/users/commands/registerUser/registerUser.schema'
+import { registerSchema } from '@app/users/commands/registerUser/registerUser.schema'
 import { ZodError, type ZodIssue } from 'zod'
 import {
   emailIssue,
   usernameIssue,
-} from '@src/app/users/commands/registerUser/registerUser.error'
+} from '@app/users/commands/registerUser/registerUser.error'
 import { db } from '@infra/clients/db.client'
 import { factory } from '@app/common/clients/factory.client'
 
