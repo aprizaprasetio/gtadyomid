@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
 import { validator } from 'hono/validator'
 import { z, ZodError, type ZodIssue } from 'zod'
-import { auth } from '@src/app/common/clients/auth.client'
-import { db } from '@src/infra/clients/db.client'
-import { authValidator } from '@src/app/common/validators/auth.validator'
+import { auth } from '@app/common/clients/auth.client'
+import { db } from '@infra/clients/db.client'
+import { authValidator } from '@app/common/validators/auth.validator'
 
 export const registerSchema = z.object({
   email: z.string().email().toLowerCase(),

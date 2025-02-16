@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test'
 import { resolve } from 'node:path'
-import app from '@src/api'
-import { db } from '@src/infra/clients/db.client'
+import app from '@api'
+import { db } from '@infra/clients/db.client'
 import { nigoUserCookie } from '@tests/testSetup'
 
 const anarchyRoadMission = new FormData()

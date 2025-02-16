@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'bun:test'
 import type { z } from 'zod'
-import { db } from '@src/infra/clients/db.client'
-import { auth } from '@src/app/common/clients/auth.client'
-import app from '@src/api'
+import { db } from '@infra/clients/db.client'
+import { auth } from '@app/common/clients/auth.client'
+import app from '@api'
 import { loginUser, registerUser, ichigoUser } from '@tests/testSetup'
-import type { loginSchema, registerSchema } from '@src/app/users/users.api'
+import type { loginSchema, registerSchema } from '@app/users/users.api'
 
 const newUser: z.infer<typeof registerSchema> = {
   email: 'new@example.com',
