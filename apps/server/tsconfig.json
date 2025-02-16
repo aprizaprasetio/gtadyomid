@@ -2,6 +2,9 @@
   "compilerOptions": {
     "paths": {
       "@src/*": ["./src/*"],
+      "@api/*": ["./src/api/*"],
+      "@app/*": ["./src/app/*"],
+      "@infra/*": ["./src/infra/*"],
       "@tests/*": ["./tests/*"]
     },
     "strict": true,
