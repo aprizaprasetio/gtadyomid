@@ -21,7 +21,7 @@ Find out what happens.
 )
 anarchyRoadMission.append(
   'images',
-  Bun.file(resolve(__dirname, '../tests/assets/Anarchy Road.webp')),
+  Bun.file(resolve(__dirname, './assets/Anarchy Road.webp')),
 )
 
 describe('POST /missions', () => {
