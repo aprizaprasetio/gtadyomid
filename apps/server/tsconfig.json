@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
     "paths": {
-      "@src/*": ["./src/*"]
+      "@src/*": ["./src/*"],
+      "@tests/*": ["./tests/*"]
     },
     "strict": true,
     "typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "tests/**/*"]
 }
