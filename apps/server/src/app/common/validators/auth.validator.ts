@@ -1,15 +1,6 @@
 import { validator } from 'hono/validator'
-import { ZodError } from 'zod'
-import { auth } from '@app/common/clients/auth.client'
 import { db } from '@infra/clients/db.client'
-
-export const sessionError = new ZodError([
-  {
-    code: 'custom',
-    path: [auth.sessionCookieName],
-    message: 'Session is invalid',
-  },
-])
+import { sessionError } from '@app/common/constants/auth.constant'
 
 export const authValidator = validator('cookie', (_, c) => {
   const session = c.get('session')

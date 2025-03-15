@@ -4,11 +4,12 @@ import { db } from '@infra/clients/db.client'
 import { loginError } from '@app/users/commands/loginUser/loginUser.error'
 import { auth } from '@app/common/clients/auth.client'
 import { factory } from '@app/common/clients/factory.client'
+import { type } from 'arktype'
 
 export const loginUser = factory.createHandlers(
   validator('json', async (val, c) => {
-    const { error, data } = await loginSchema.safeParseAsync(val)
-    if (error) return c.json(error, 400)
+    const data = loginSchema(val)
+    if (data instanceof type.errors) return c.json(data.summary, 400)
 
     const user = await db.user.findFirst({
       where: {

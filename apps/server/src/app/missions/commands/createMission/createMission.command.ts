@@ -1,16 +1,19 @@
+import { type } from 'arktype'
 import { validator } from 'hono/validator'
+import { db } from '@infra/clients/db.client'
 import { factory } from '@app/common/clients/factory.client'
 import { authValidator } from '@app/common/validators/auth.validator'
 import { missionSchema } from '@app/missions/commands/createMission/createMission.schema'
 import { storeMissionImage } from '@app/missions/commands/createMission/createMission.func'
 import type { StoredImagePath } from '@app/common/constants/images.constant'
-import { db } from '@infra/clients/db.client'
 
 export const createMission = factory.createHandlers(
   authValidator,
   validator('form', async (val, c) => {
-    const { error, data } = await missionSchema.safeParseAsync(val)
-    if (error) return c.json(error, 400)
+    const data = missionSchema(val)
+    if (data instanceof type.errors) {
+      return c.json(data.summary, 400)
+    }
 
     return data
   }),

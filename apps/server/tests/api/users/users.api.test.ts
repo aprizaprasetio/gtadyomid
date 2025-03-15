@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'bun:test'
-import type { z } from 'zod'
 import { db } from '@infra/clients/db.client'
 import { auth } from '@app/common/clients/auth.client'
 import app from '@api'
@@ -7,13 +6,13 @@ import { loginUser, registerUser, ichigoUser } from '@tests/testSetup'
 import type { loginSchema } from '@app/users/commands/loginUser/loginUser.schema'
 import type { registerSchema } from '@app/users/commands/registerUser/registerUser.schema'
 
-const newUser: z.infer<typeof registerSchema> = {
+const newUser: typeof registerSchema.infer = {
   email: 'new@example.com',
   username: 'newuser',
   password: 'newpassword123',
   displayName: 'New User',
 }
-async function loginScenario(label: string, user: z.infer<typeof loginSchema>) {
+async function loginScenario(label: string, user: typeof loginSchema.infer) {
   it(label, async () => {
     const res = await loginUser(user)
 
@@ -46,7 +45,7 @@ describe('POST /register', () => {
     })
 
     expect(res.status).toBe(400)
-    expect(await res.json()).toHaveProperty('issues')
+    expect(await res.json()).toBeString()
   })
 })
 

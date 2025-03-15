@@ -4,7 +4,11 @@ export const allowedImageTypes = ['image/webp', 'image/png']
 
 export const allowedImageExtensions = ['webp', 'png']
 
+export const imageExtensionExpected = `${allowedImageExtensions.join(' or ')}`
+
 export const allowedImageSize = 1_048_576
+
+export const imageSizeExpected = `less than ${allowedImageSize * 1000 * 1000}MB`
 
 export const imageVariants = {
   high: 1_920,

@@ -1,6 +1,11 @@
-import { z } from 'zod'
+import { type } from 'arktype'
 
-export const loginSchema = z.object({
-  identity: z.string().toLowerCase(),
-  password: z.string(),
+export const loginSchema = type({
+  identity: 'string',
+  password: 'string',
+})
+
+export const findUserSchema = type({
+  identity: 'string',
+  password: 'string',
 })

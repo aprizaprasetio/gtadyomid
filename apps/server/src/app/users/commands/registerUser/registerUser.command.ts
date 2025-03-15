@@ -1,17 +1,17 @@
 import { validator } from 'hono/validator'
 import { registerSchema } from '@app/users/commands/registerUser/registerUser.schema'
-import { ZodError, type ZodIssue } from 'zod'
 import {
-  emailIssue,
-  usernameIssue,
+  emailError,
+  usernameError,
 } from '@app/users/commands/registerUser/registerUser.error'
 import { db } from '@infra/clients/db.client'
 import { factory } from '@app/common/clients/factory.client'
+import { type } from 'arktype'
 
 export const registerUser = factory.createHandlers(
   validator('json', async (val, c) => {
-    const { error, data } = await registerSchema.safeParseAsync(val)
-    if (error) return c.json(error, 400)
+    const data = registerSchema(val)
+    if (data instanceof type.errors) return c.json(data.summary, 400)
 
     const emailCount = await db.user.count({
       where: {
@@ -23,11 +23,11 @@ export const registerUser = factory.createHandlers(
         username: data.username,
       },
     })
-    const issues: ZodIssue[] = []
-    if (emailCount) issues.push(emailIssue)
-    if (usernameCount) issues.push(usernameIssue)
+    const errors: string[] = []
+    if (emailCount) errors.push(emailError)
+    if (usernameCount) errors.push(usernameError)
 
-    if (issues.length) return c.json(new ZodError(issues), 400)
+    if (errors.length) return c.json(errors, 400)
 
     return data
   }),

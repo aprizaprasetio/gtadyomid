@@ -1,8 +1,8 @@
-import { z } from 'zod'
+import { type } from 'arktype'
 
-export const registerSchema = z.object({
-  email: z.string().email().toLowerCase(),
-  username: z.string().toLowerCase(),
-  displayName: z.string().nullish(),
-  password: z.string(),
+export const registerSchema = type({
+  email: 'string.email',
+  username: 'string.alphanumeric',
+  displayName: 'string',
+  password: 'string',
 })

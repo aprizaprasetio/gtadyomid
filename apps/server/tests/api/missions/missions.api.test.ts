@@ -19,6 +19,7 @@ Find out what happens.
 
   `,
 )
+
 anarchyRoadMission.append(
   'images',
   Bun.file(resolve(__dirname, './assets/Anarchy Road.webp')),
@@ -54,7 +55,7 @@ describe('POST /missions', () => {
     })
 
     expect(mission.status).toBe(400)
-    expect(await mission.json()).toHaveProperty('issues')
+    expect(await mission.json()).toBeString()
   })
 
   it('should not create a mission with unauthenticated cookie', async () => {
@@ -64,6 +65,6 @@ describe('POST /missions', () => {
     })
 
     expect(mission.status).toBe(401)
-    expect(await mission.json()).toHaveProperty('issues')
+    expect(await mission.json()).toBeString()
   })
 })

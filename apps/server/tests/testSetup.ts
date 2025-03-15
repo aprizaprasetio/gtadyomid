@@ -5,13 +5,13 @@ import { db } from '@infra/clients/db.client'
 import type { loginSchema } from '@app/users/commands/loginUser/loginUser.schema'
 import type { registerSchema } from '@app/users/commands/registerUser/registerUser.schema'
 
-export const ichigoUser: z.infer<typeof registerSchema> = {
+export const ichigoUser: typeof registerSchema.infer = {
   email: 'ichigo@example.com',
   username: 'ichigouser',
   password: 'ichigopassword123',
   displayName: 'Ichigo User',
 }
-export const nigoUser: z.infer<typeof registerSchema> = {
+export const nigoUser: typeof registerSchema.infer = {
   email: 'nigo@example.com',
   username: 'nigouser',
   password: 'nigopassword123',
@@ -19,9 +19,7 @@ export const nigoUser: z.infer<typeof registerSchema> = {
 }
 export let nigoUserCookie = ''
 
-export async function registerUser(
-  user: Partial<z.infer<typeof registerSchema>>,
-) {
+export async function registerUser(user: Partial<typeof registerSchema.infer>) {
   return app.request('/users/register', {
     method: 'POST',
     body: JSON.stringify(user),
@@ -31,7 +29,7 @@ export async function registerUser(
   })
 }
 
-export function loginUser(user: Partial<z.infer<typeof loginSchema>>) {
+export function loginUser(user: Partial<typeof loginSchema.infer>) {
   return app.request('users/login', {
     method: 'POST',
     body: JSON.stringify(user),
